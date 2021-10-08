@@ -1,12 +1,14 @@
 #![no_std]
 #![no_main]
 #![feature(custom_test_frameworks)]
-#![test_runner(crate::test_runner)]
+#![test_runner(blog_os::test_runner)]
 #![reexport_test_harness_main = "test_main"]
 
+// use blog_os::println;
+use blog_os::println;
 use core::panic::PanicInfo;
 mod serial;
-mod vga_buffer;
+// mod vga_buffer;
 
 #[no_mangle]
 pub extern "C" fn _start() -> ! {
@@ -30,10 +32,11 @@ fn panic(info: &PanicInfo) -> ! {
 #[cfg(test)]
 #[panic_handler]
 fn panic(info: &PanicInfo) -> ! {
-    serial_println!("[failed]\n");
-    serial_println!("Error: {}\n", info);
-    exit_qemu(QemuExitCode::Failed);
-    loop {}
+    blog_os::test_panic_handler(info);
+    // serial_println!("[failed]\n");
+    // serial_println!("Error: {}\n", info);
+    // exit_qemu(QemuExitCode::Failed);
+    // loop {}
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
